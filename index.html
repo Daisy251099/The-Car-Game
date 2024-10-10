@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driving Direction Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        #resetButton {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px;
+            background-color: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #imageToggle {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px;
+            background-color: lightgray;
+            cursor: pointer;
+        }
+        .roundabout-input {
+            margin-top: 20px;
+        }
+        #log {
+            margin-top: 20px;
+            text-align: left;
+            max-width: 400px;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+        .direction-image {
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Driving Direction Game</h1>
+
+    <!-- Image Toggle Button -->
+    <button id="imageToggle" onclick="toggleImages()">Hide Images</button>
+
+    <!-- Reset Button -->
+    <button id="resetButton" onclick="resetGame()">Start Again</button>
+
+    <p id="direction">Ready to drive! Click "Direction" to get a random direction.</p>
+
+    <!-- Direction Button -->
+    <div>
+        <button id="directionButton">Direction</button>
+    </div>
+
+    <!-- Roundabout Buttons -->
+    <div class="roundabout-input">
+        <p>Select the number of exits in the roundabout:</p>
+        <button onclick="enterRoundabout(2)">2 Exits</button>
+        <button onclick="enterRoundabout(3)">3 Exits</button>
+        <button onclick="enterRoundabout(4)">4 Exits</button>
+        <button onclick="enterRoundabout(5)">5 Exits</button>
+    </div>
+
+    <!-- Log of directions -->
+    <div id="log">
+        <h3>Direction Log:</h3>
+        <ul id="directionLog"></ul>
+    </div>
+
+    <script>
+        // Array of directions and corresponding image paths (replace with your actual image file paths)
+        const directions = [
+            { name: 'Straight', image: 'images/straight-arrow.png' },  // Replace with actual image path
+            { name: 'Left', image: 'images/left-arrow.png' },          // Replace with actual image path
+            { name: 'Right', image: 'images/right-arrow.png' }         // Replace with actual image path
+        ];
+
+        let imagesEnabled = true; // Flag to track whether images are enabled or not
+
+        // Function to log each direction, adding the newest one at the top
+        function logDirection(message, imageUrl) {
+            const log = document.getElementById('directionLog');
+            const newLogItem = document.createElement('li');
+
+            // Check if images are enabled and if there's an image to show
+            if (imagesEnabled && imageUrl) {
+                // Create image element for the direction
+                const directionImage = document.createElement('img');
+                directionImage.src = imageUrl;
+                directionImage.alt = message;
+                directionImage.className = 'direction-image';
+                newLogItem.appendChild(directionImage);  // Add image if available
+            } else {
+                // If no image, just add the message (for roundabout cases or if images are turned off)
+                newLogItem.innerText = message;
+            }
+
+            log.prepend(newLogItem);  // Adds the new direction at the top
+        }
+
+        // Event listener for the Direction button
+        document.getElementById('directionButton').addEventListener('click', function() {
+            const randomIndex = Math.floor(Math.random() * directions.length);
+            const randomDirection = directions[randomIndex];
+            const message = randomDirection.name;
+            const imageUrl = randomDirection.image;
+
+            // Update the main direction display with the image or text based on the toggle state
+            if (imagesEnabled) {
+                document.getElementById("direction").innerHTML = `<img src="${imageUrl}" alt="${message}" class="direction-image" />`;
+            } else {
+                document.getElementById("direction").innerText = message;
+            }
+            logDirection(message, imagesEnabled ? imageUrl : null);
+        });
+
+        // Function for handling roundabout exits
+        function enterRoundabout(exits) {
+            const chosenExit = Math.floor(Math.random() * exits) + 1;
+            const message = `Roundabout with ${exits} exits. Take exit ${chosenExit}!`;
+
+            // Update the main direction display with text for roundabout exit
+            document.getElementById("direction").innerText = message;
+            logDirection(message, null);  // Pass null for image since there's no image for roundabout exits
+        }
+
+        // Function to reset the game
+        function resetGame() {
+            document.getElementById("direction").innerText = "Ready to drive! Click \"Direction\" to get a random direction.";
+            // Do not clear the log; retain previous entries
+        }
+
+        // Function to toggle images
+        function toggleImages() {
+            imagesEnabled = !imagesEnabled; // Toggle the flag
+            document.getElementById("imageToggle").innerText = imagesEnabled ? "Hide Images" : "Show Images"; // Update button text
+            // No need to reset the game since we want to keep the log intact
+            const currentDirection = document.getElementById("direction").innerText;
+            if (!imagesEnabled) {
+                document.getElementById("direction").innerText = currentDirection; // Keep text only if images are disabled
+            }
+        }
+    </script>
+
+</body>
+</html>
