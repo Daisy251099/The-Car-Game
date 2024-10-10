@@ -4,38 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Driving Direction Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet"> <!-- Fun font -->
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             padding: 20px;
+            margin: 0;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-family: 'Pacifico', cursive; /* Fun font */
+            font-size: 2.5em; /* Bigger font for the title */
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
         }
         button {
-            padding: 10px 20px;
+            padding: 10px 15px;
             font-size: 16px;
             margin: 5px;
             cursor: pointer;
-        }
-        #resetButton {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            padding: 10px;
-            background-color: red;
-            color: white;
             border: none;
-            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            transition: transform 0.2s; /* Smooth scaling effect */
         }
-        #imageToggle {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            padding: 10px;
-            background-color: lightgray;
-            cursor: pointer;
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:active {
+            transform: scale(0.95); /* Scale down effect when clicked */
         }
         .roundabout-input {
-            margin-top: 20px;
+            margin: 20px 0;
         }
         #log {
             margin-top: 20px;
@@ -44,10 +50,24 @@
             margin: 20px auto;
             border: 1px solid #ddd;
             padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        #direction {
+            font-size: 2em; /* Larger font size for displayed directions */
+            margin: 20px 0;
+            min-height: 60px; /* Ensure space for the direction message */
+            opacity: 0; /* Start hidden for fade-in effect */
+            transition: opacity 0.5s ease; /* Fade transition */
         }
         .direction-image {
             width: 50px;
             height: 50px;
+        }
+        .log-item {
+            opacity: 0; /* Start hidden for fade-in effect */
+            transition: opacity 0.5s ease; /* Fade transition */
         }
     </style>
 </head>
@@ -55,18 +75,15 @@
 
     <h1>Driving Direction Game</h1>
 
-    <!-- Image Toggle Button -->
-    <button id="imageToggle" onclick="toggleImages()">Hide Images</button>
-
-    <!-- Reset Button -->
-    <button id="resetButton" onclick="resetGame()">Start Again</button>
+    <div class="button-container">
+        <button id="resetButton" onclick="resetGame()">Start Again</button>
+        <button id="imageToggle" onclick="toggleImages()">Hide Images</button>
+    </div>
 
     <p id="direction">Ready to drive! Click "Direction" to get a random direction.</p>
 
     <!-- Direction Button -->
-    <div>
-        <button id="directionButton">Direction</button>
-    </div>
+    <button id="directionButton">Direction</button>
 
     <!-- Roundabout Buttons -->
     <div class="roundabout-input">
@@ -97,6 +114,7 @@
         function logDirection(message, imageUrl) {
             const log = document.getElementById('directionLog');
             const newLogItem = document.createElement('li');
+            newLogItem.className = 'log-item'; // Add class for animation
 
             // Check if images are enabled and if there's an image to show
             if (imagesEnabled && imageUrl) {
@@ -112,6 +130,11 @@
             }
 
             log.prepend(newLogItem);  // Adds the new direction at the top
+
+            // Trigger fade-in effect
+            requestAnimationFrame(() => {
+                newLogItem.style.opacity = 1; // Fade in
+            });
         }
 
         // Event listener for the Direction button
@@ -122,11 +145,19 @@
             const imageUrl = randomDirection.image;
 
             // Update the main direction display with the image or text based on the toggle state
+            const directionElement = document.getElementById("direction");
             if (imagesEnabled) {
-                document.getElementById("direction").innerHTML = `<img src="${imageUrl}" alt="${message}" class="direction-image" />`;
+                directionElement.innerHTML = `<img src="${imageUrl}" alt="${message}" class="direction-image" />`;
             } else {
-                document.getElementById("direction").innerText = message;
+                directionElement.innerText = message;
             }
+            
+            // Fade-in effect for direction display
+            directionElement.style.opacity = 0; // Start hidden
+            requestAnimationFrame(() => {
+                directionElement.style.opacity = 1; // Fade in
+            });
+
             logDirection(message, imagesEnabled ? imageUrl : null);
         });
 
@@ -136,13 +167,22 @@
             const message = `Roundabout with ${exits} exits. Take exit ${chosenExit}!`;
 
             // Update the main direction display with text for roundabout exit
-            document.getElementById("direction").innerText = message;
+            const directionElement = document.getElementById("direction");
+            directionElement.innerText = message;
+
+            // Fade-in effect for direction display
+            directionElement.style.opacity = 0; // Start hidden
+            requestAnimationFrame(() => {
+                directionElement.style.opacity = 1; // Fade in
+            });
+
             logDirection(message, null);  // Pass null for image since there's no image for roundabout exits
         }
 
         // Function to reset the game
         function resetGame() {
             document.getElementById("direction").innerText = "Ready to drive! Click \"Direction\" to get a random direction.";
+            document.getElementById("direction").style.opacity = 1; // Ensure visibility
             // Do not clear the log; retain previous entries
         }
 
