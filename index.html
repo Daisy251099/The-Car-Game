@@ -350,13 +350,6 @@
             const logText = document.getElementById('log');
             currentDirectionText.classList.toggle('dark-mode', darkModeEnabled);
             logText.classList.toggle('dark-mode', darkModeEnabled);
-            
-            // Change the current direction color based on dark mode
-            if (darkModeEnabled) {
-                currentDirectionElement.style.color = 'var(--current-direction-dark-color)';
-            } else {
-                currentDirectionElement.style.color = 'var(--current-direction-color)';
-            }
         });
 
         // Change button color
