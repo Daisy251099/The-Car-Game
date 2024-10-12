@@ -272,7 +272,7 @@
         // Direction button functionality
         document.getElementById('directionButton').addEventListener('click', function() {
             const randomDirection = directions[Math.floor(Math.random() * directions.length)];
-            showDirection(randomDirection); // Add "Go" before the direction
+            showDirection(`Go ${randomDirection}`); // Add "Go" before the direction
             if (soundsEnabled && beepEnabled) {
                 document.getElementById('beepSound').play(); // Play beep sound when getting a direction
             }
