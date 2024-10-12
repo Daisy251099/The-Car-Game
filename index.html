@@ -8,7 +8,7 @@
         :root {
             --title-color: #4CAF50; /* Title color */
             --current-direction-color: #333; /* Current direction color in light mode */
-            --current-direction-dark-color: #FFFFFF; /* Current direction color in dark mode */
+            --current-direction-dark-color: #f2f2f2; /* Current direction color in dark mode */
         }
         body {
             font-family: Arial, sans-serif;
@@ -89,7 +89,7 @@
             transition: opacity 0.5s; /* Animation for fading in new directions */
         }
         .current-direction.dark-mode {
-            color: var(--current-direction-dark-color); /* Dark mode color (white) */
+            color: var(--current-direction-dark-color); /* Dark mode color */
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8); /* Add text shadow for better readability */
         }
         .log {
@@ -230,146 +230,136 @@
     <audio id="gpsExit4" src="sounds/gps-exit-4.mp3"></audio>
     <audio id="gpsExit5" src="sounds/gps-exit-5.mp3"></audio>
 
-    <div class="log" id="log"></div> <!-- Log moved to bottom -->
-
     <script>
-        let log = []; // Log to keep track of directions
-        const directions = ['Left', 'Right', 'Straight']; // Possible directions
-        let soundsEnabled = true; // Default sounds toggle
-        let gpsVoiceEnabled = true; // Default GPS voice toggle
-        let beepEnabled = false; // Default beep sound toggle
-        let darkModeEnabled = false; // Default dark mode toggle
+        document.addEventListener('DOMContentLoaded', () => {
+            const splashScreen = document.getElementById('splashScreen');
+            const startSound = document.getElementById('startSound');
+            const beepSound = document.getElementById('beepSound');
+            const gpsLeft = document.getElementById('gpsLeft');
+            const gpsRight = document.getElementById('gpsRight');
+            const gpsStraight = document.getElementById('gpsStraight');
+            const currentDirectionElement = document.getElementById('currentDirection');
+            const startAgainButton = document.getElementById('startAgainButton');
+            const directionButton = document.getElementById('directionButton');
+            const settingsButton = document.getElementById('settingsButton');
+            const settingsModal = document.getElementById('settingsModal');
+            const closeModal = document.getElementById('closeModal');
+            const toggleSound = document.getElementById('toggleSound');
+            const toggleBeep = document.getElementById('toggleBeep');
+            const toggleGPSVoice = document.getElementById('toggleGPSVoice');
+            const buttonColorPicker = document.getElementById('buttonColorPicker');
+            const toggleDarkMode = document.getElementById('toggleDarkMode');
 
-        const logElement = document.getElementById('log');
-        const currentDirectionElement = document.getElementById('currentDirection');
-        const splashScreen = document.getElementById('splashScreen');
+            let engineSoundEnabled = true;
+            let beepSoundEnabled = false;
+            let gpsVoiceEnabled = true;
 
-        // Show direction
-        function showDirection(direction) {
-            currentDirectionElement.textContent = `Go ${direction}`; // Update the direction text
-            currentDirectionElement.classList.remove('dark-mode'); // Reset dark mode class for direction
-
-            // Update log
-            addDirectionToLog(direction);
-            playGPSVoice(direction);
-        }
-
-        function handleRoundaboutClick(exits) {
-            const exitNumber = Math.floor(Math.random() * exits) + 1; // Random exit number
-            const direction = `Take the ${exitNumber}${getOrdinalSuffix(exitNumber)} exit`; // Format the direction
-            showDirection(direction);
-            if (soundsEnabled && beepEnabled) {
-                document.getElementById('beepSound').play(); // Play beep sound for roundabout
-            }
-        }
-
-        // Add event listeners for roundabout buttons
-        document.getElementById('roundabout2').addEventListener('click', () => handleRoundaboutClick(2));
-        document.getElementById('roundabout3').addEventListener('click', () => handleRoundaboutClick(3));
-        document.getElementById('roundabout4').addEventListener('click', () => handleRoundaboutClick(4));
-        document.getElementById('roundabout5').addEventListener('click', () => handleRoundaboutClick(5));
-
-        // Direction button functionality
-        document.getElementById('directionButton').addEventListener('click', function() {
-            const randomDirection = directions[Math.floor(Math.random() * directions.length)];
-            showDirection(`Go ${randomDirection}`); // Add "Go" before the direction
-            if (soundsEnabled && beepEnabled) {
-                document.getElementById('beepSound').play(); // Play beep sound when getting a direction
-            }
-        });
-
-        // Start again functionality
-        document.getElementById('startAgainButton').addEventListener('click', function() {
-            log = [];
-            logElement.innerHTML = ''; // Clear log
-            currentDirectionElement.textContent = 'Start Your Engine!'; // Reset text
-            if (soundsEnabled) {
-                document.getElementById('startSound').play(); // Play engine sound on restart
-            }
-        });
-
-        // Add direction to log
-        function addDirectionToLog(direction) {
-            log.unshift(direction); // Add to the top of the log
-            logElement.innerHTML = log.join('<br>');
-        }
-
-        // Play GPS voice directions
-        function playGPSVoice(direction) {
-            if (gpsVoiceEnabled) {
-                if (direction.startsWith('Go Left')) {
-                    document.getElementById('gpsLeft').play();
-                } else if (direction.startsWith('Go Right')) {
-                    document.getElementById('gpsRight').play();
-                } else if (direction.startsWith('Go Straight')) {
-                    document.getElementById('gpsStraight').play();
-                } else if (direction.startsWith('Take the')) {
-                    const exitNumber = parseInt(direction.split(' ')[2]); // Extract exit number
-                    document.getElementById(`gpsExit${exitNumber}`).play();
+            // Hide splash screen after click and play start sound
+            splashScreen.addEventListener('click', () => {
+                splashScreen.style.opacity = '0'; // Fade out
+                setTimeout(() => splashScreen.style.display = 'none', 500); // After fade out
+                if (engineSoundEnabled) {
+                    startSound.play();
                 }
-            }
-        }
+            });
 
-        // Get ordinal suffix for numbers
-        function getOrdinalSuffix(number) {
-            const suffixes = ["th", "st", "nd", "rd"];
-            const value = number % 100;
-            return suffixes[(value - 20) % 10] || suffixes[value] || suffixes[0];
-        }
+            // Dark Mode Toggle
+            toggleDarkMode.addEventListener('change', () => {
+                document.body.classList.toggle('dark-mode');
+                currentDirectionElement.classList.toggle('dark-mode');
+            });
 
-        // Handle settings modal
-        document.getElementById('settingsButton').addEventListener('click', function() {
-            document.getElementById('settingsModal').style.display = 'flex';
-        });
+            // Open/Close Settings Modal
+            settingsButton.addEventListener('click', () => {
+                settingsModal.style.display = 'flex';
+            });
 
-        // Close the settings modal
-        document.getElementById('closeModal').addEventListener('click', function() {
-            document.getElementById('settingsModal').style.display = 'none';
-        });
+            closeModal.addEventListener('click', () => {
+                settingsModal.style.display = 'none';
+            });
 
-        // Toggle engine sound
-        document.getElementById('toggleSound').addEventListener('change', function() {
-            soundsEnabled = this.checked;
-        });
+            // Toggle Engine Sound
+            toggleSound.addEventListener('change', () => {
+                engineSoundEnabled = toggleSound.checked;
+            });
 
-        // Toggle beep sound effect
-        document.getElementById('toggleBeep').addEventListener('change', function() {
-            beepEnabled = this.checked;
-        });
+            // Toggle Beep Sound
+            toggleBeep.addEventListener('change', () => {
+                beepSoundEnabled = toggleBeep.checked;
+            });
 
-        // Toggle GPS voice
-        document.getElementById('toggleGPSVoice').addEventListener('change', function() {
-            gpsVoiceEnabled = this.checked;
-        });
+            // Toggle GPS Voice
+            toggleGPSVoice.addEventListener('change', () => {
+                gpsVoiceEnabled = toggleGPSVoice.checked;
+            });
 
-        // Toggle dark mode
-        document.getElementById('toggleDarkMode').addEventListener('change', function() {
-            darkModeEnabled = this.checked;
-            document.body.classList.toggle('dark-mode', darkModeEnabled); // Add or remove dark mode class
-            const currentDirectionText = document.getElementById('currentDirection');
-            const logText = document.getElementById('log');
-            currentDirectionText.classList.toggle('dark-mode', darkModeEnabled);
-            logText.classList.toggle('dark-mode', darkModeEnabled);
-        });
+            // Change Button Color
+            buttonColorPicker.addEventListener('input', (event) => {
+                const newColor = event.target.value;
+                document.querySelectorAll('.button').forEach(button => {
+                    button.style.backgroundColor = newColor;
+                });
+            });
 
-        // Change button color
-        document.getElementById('buttonColorPicker').addEventListener('input', function() {
-            let color = this.value;
-            document.querySelectorAll('.button').forEach(button => {
-                button.style.backgroundColor = color;
+            // Directions functionality
+            directionButton.addEventListener('click', () => {
+                const directions = ['Left', 'Right', 'Straight'];
+                const randomDirection = directions[Math.floor(Math.random() * directions.length)];
+
+                currentDirectionElement.style.opacity = '0'; // Fade out
+
+                setTimeout(() => {
+                    currentDirectionElement.textContent = randomDirection;
+                    currentDirectionElement.style.opacity = '1'; // Fade in
+                }, 500);
+
+                if (gpsVoiceEnabled) {
+                    if (randomDirection === 'Left') {
+                        gpsLeft.play();
+                    } else if (randomDirection === 'Right') {
+                        gpsRight.play();
+                    } else if (randomDirection === 'Straight') {
+                        gpsStraight.play();
+                    }
+                }
+
+                if (beepSoundEnabled) {
+                    beepSound.play();
+                }
+            });
+
+            // Roundabouts functionality
+            document.getElementById('roundabout2').addEventListener('click', () => playRoundaboutExit(2));
+            document.getElementById('roundabout3').addEventListener('click', () => playRoundaboutExit(3));
+            document.getElementById('roundabout4').addEventListener('click', () => playRoundaboutExit(4));
+            document.getElementById('roundabout5').addEventListener('click', () => playRoundaboutExit(5));
+
+            function playRoundaboutExit(exits) {
+    const randomExit = Math.floor(Math.random() * exits) + 1; // Random exit between 1 and the number of exits
+    const exitAudio = document.getElementById(`gpsExit${randomExit}`);
+    currentDirectionElement.style.opacity = '0'; // Fade out
+    setTimeout(() => {
+        currentDirectionElement.textContent = `Take exit ${randomExit}`; // Use random exit
+        currentDirectionElement.style.opacity = '1'; // Fade in
+    }, 500);
+    if (gpsVoiceEnabled && exitAudio) {
+        exitAudio.play();
+    }
+    if (beepSoundEnabled) {
+        beepSound.play();
+    }
+}
+
+
+            // Reset game
+            startAgainButton.addEventListener('click', () => {
+                currentDirectionElement.textContent = 'Start Your Engine!';
+                if (engineSoundEnabled) {
+                    startSound.play();
+                }
             });
         });
-
-        // Splash screen functionality
-        splashScreen.addEventListener('click', function() {
-            this.style.opacity = 0; // Fade out effect
-            setTimeout(() => {
-                this.style.display = 'none'; // Hide splash screen
-                if (soundsEnabled) {
-                    document.getElementById('startSound').play(); // Play engine sound on splash screen click
-                }
-            }, 500); // Duration of fade out
-        });
     </script>
+
 </body>
 </html>
