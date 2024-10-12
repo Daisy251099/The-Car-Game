@@ -293,25 +293,47 @@
                 gpsVoiceEnabled = toggleGPSVoice.checked;
             });
 
-            // Change Button Color
-            buttonColorPicker.addEventListener('input', (event) => {
-                const newColor = event.target.value;
-                document.querySelectorAll('.button').forEach(button => {
-                    button.style.backgroundColor = newColor;
-                });
-            });
+            // Change Button Color and Title Color
+buttonColorPicker.addEventListener('input', (event) => {
+    const newColor = event.target.value;
+    // Change button colors
+    document.querySelectorAll('.button').forEach(button => {
+        button.style.backgroundColor = newColor;
+    });
+    // Change title color
+    document.querySelector('.title').style.color = newColor; // Update title color
+});
+
 
             // Directions functionality
             directionButton.addEventListener('click', () => {
-                const directions = ['Left', 'Right', 'Straight'];
-                const randomDirection = directions[Math.floor(Math.random() * directions.length)];
+                const directions = [
+    { text: 'Turn left', audio: gpsLeft },
+    { text: 'Turn right', audio: gpsRight },
+    { text: 'Go straight', audio: gpsStraight }
+];
 
-                currentDirectionElement.style.opacity = '0'; // Fade out
+// Select a random direction
+const randomDirection = directions[Math.floor(Math.random() * directions.length)];
 
-                setTimeout(() => {
-                    currentDirectionElement.textContent = randomDirection;
-                    currentDirectionElement.style.opacity = '1'; // Fade in
-                }, 500);
+// Fade out the current direction
+currentDirectionElement.style.opacity = '0'; // Fade out
+
+setTimeout(() => {
+    currentDirectionElement.textContent = randomDirection.text; // Display new direction text
+    currentDirectionElement.style.opacity = '1'; // Fade in
+
+    // Play corresponding audio
+    if (gpsVoiceEnabled) {
+        randomDirection.audio.play();
+    }
+
+    // Play beep sound if enabled
+    if (beepSoundEnabled) {
+        beepSound.play();
+    }
+}, 500);
+
 
                 if (gpsVoiceEnabled) {
                     if (randomDirection === 'Left') {
