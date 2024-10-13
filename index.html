@@ -7,161 +7,163 @@
     <style>
         :root {
             --title-color: #4CAF50; /* Title color */
-            --current-direction-color: #333; /* Current direction color in light mode */
-            --current-direction-dark-color: #f2f2f2; /* Current direction color in dark mode */
+            --button-bg-color: #4CAF50; /* Button background color */
+            --button-hover-color: #45a049; /* Button hover color */
+            --text-color: #333; /* Light mode text color */
+            --text-dark-color: #f2f2f2; /* Dark mode text color */
+            --bg-light: #f2f2f2; /* Light mode background color */
+            --bg-dark: #333; /* Dark mode background color */
         }
+
+        /* Basic Styling */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* Align elements from the top */
             align-items: center;
             height: 100vh;
-            background-color: #f2f2f2;
-            position: relative; /* Allow positioning of splash screen */
-            overflow: hidden; /* Prevent overflow from splash screen */
+            background-color: var(--bg-light);
+            color: var(--text-color);
             transition: background-color 0.5s, color 0.5s; /* Smooth transition for dark mode */
         }
+
         .dark-mode {
-            background-color: #333; /* Dark background */
-            color: #f2f2f2; /* Light text */
+            background-color: var(--bg-dark);
+            color: var(--text-dark-color);
         }
+
+        /* Title Styling */
         .title {
             font-size: 36px;
             font-family: 'Comic Sans MS', cursive, sans-serif;
-            margin: 20px 0 10px; /* Adjusted margin */
-            color: var(--title-color); /* Title color */
+            margin: 20px 0;
+            color: var(--button-bg-color); /* Match title color with button color */
         }
+
+        /* Splash Screen Styling */
         .splash-screen {
             display: flex;
             justify-content: center;
             align-items: center;
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            inset: 0;
             background-color: rgba(0, 0, 0, 0.8);
             color: white;
             font-size: 36px;
             font-family: 'Comic Sans MS', cursive, sans-serif;
             cursor: pointer;
-            z-index: 1000; /* Ensure splash is on top */
-            transition: opacity 0.5s; /* Smooth fade out */
+            transition: opacity 0.5s ease;
+            z-index: 1000;
         }
-        .controls {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px; /* Adjusted margin */
-            width: 90%;
-            justify-content: space-between;
-            align-items: center;
-        }
+
+        /* Button Styles */
         .button {
             padding: 10px;
             font-size: 18px;
-            background-color: var(--button-color, #4CAF50);
+            background-color: var(--button-bg-color);
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            min-width: 120px; /* Set a minimum width for consistency */
-            height: 50px; /* Fixed height */
-            max-width: 150px; /* Fixed max width */
-            transition: transform 0.2s; /* Animation on button click */
+            min-width: 120px;
+            height: 50px;
+            transition: transform 0.2s ease;
         }
+
+        /* Remove hover effect */
         .button:hover {
-            background-color: var(--button-hover-color, #45a049);
-            transform: scale(1.05); /* Slightly enlarge button on hover */
+            transform: scale(1.05);
         }
-        .current-direction {
-            margin-top: 10px; /* Adjusted margin */
-            font-size: 28px; /* Increased font size */
-            font-weight: bold;
-            color: var(--current-direction-color); /* Light mode color */
-            text-align: center;
-            white-space: nowrap; /* Prevent wrapping to a new line */
-            overflow: hidden; /* Hide overflow */
-            text-overflow: ellipsis; /* Add ellipsis for long text */
-            max-width: 90%; /* Prevent text from going off-screen */
-            transition: opacity 0.5s; /* Animation for fading in new directions */
-        }
-        .current-direction.dark-mode {
-            color: var(--current-direction-dark-color); /* Dark mode color */
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8); /* Add text shadow for better readability */
-        }
-        .log {
-            margin-top: 10px; /* Adjusted margin */
-            width: 90%;
-            font-size: 20px; /* Adjusted font size */
-            text-align: center;
-            border-top: 2px solid #4CAF50; /* Add a line to separate from buttons */
-            padding-top: 10px; /* Padding above log */
-            color: #333; /* Change for light mode */
-        }
-        .log.dark-mode {
-            color: #f2f2f2; /* Light text for dark mode */
-        }
-        .settings {
-            position: relative;
-        }
-        .settings-button {
-            padding: 10px;
-            font-size: 16px;
-            height: 50px; /* Match height with other buttons */
-            width: 50px; /* Fixed width for the cog icon */
+
+        /* Start Again and Settings Button positioning */
+        .side-buttons {
+            position: absolute;
+            top: 90px; /* Adjusted to lower buttons further down */
+            right: 20px;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px; /* Increase size for better visibility */
+            flex-direction: column;
+            gap: 10px;
         }
+
+        .start-again-button {
+            position: absolute;
+            top: 90px; /* Adjusted to align with settings button */
+            left: 20px;
+            right: auto; /* Reset right positioning */
+        }
+
+        .settings-button {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+        }
+
+        /* Directions and Log */
+        .current-direction, .log {
+            margin-top: 60px; /* Increased margin for more space */
+            width: 90%;
+            text-align: center;
+            font-size: 20px;
+            transition: opacity 0.5s;
+        }
+
+        .current-direction {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        /* Flex Layouts */
+        .roundabouts {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .roundabout-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Modal Styling */
         .modal {
             display: none;
             position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             background-color: rgba(0, 0, 0, 0.4);
             justify-content: center;
             align-items: center;
         }
+
         .modal-content {
             background-color: #fff;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            text-align: left;
         }
+
         .close {
             float: right;
             font-size: 28px;
-            font-weight: bold;
-        }
-        .close:hover, .close:focus {
-            color: red;
             cursor: pointer;
         }
-        .roundabout-buttons {
+
+        /* Input and Labels */
+        label {
             display: flex;
-            gap: 10px;
-            margin-top: 10px;
-            justify-content: center; /* Center the buttons */
-            flex-wrap: wrap; /* Allow wrapping to fit on small screens */
+            align-items: center;
+            margin-bottom: 10px;
         }
-        .roundabouts {
-            margin-top: 20px;
-            width: 90%;
-            text-align: center; /* Center the title */
-        }
-        .roundabout-button {
-            width: 150px; /* Match roundabout button width */
-            height: 50px; /* Match roundabout button height */
-        }
+
         .no-animation .button {
-            transition: none; /* Disable animations */
+            transition: none;
         }
     </style>
 </head>
@@ -171,24 +173,23 @@
 
     <div class="title">Driving Direction Game</div>
 
-    <div class="controls">
-        <button id="startAgainButton" class="button">Start Again</button>
-        <button id="settingsButton" class="settings-button">⚙️</button> <!-- Changed to cog icon -->
+    <!-- Side Buttons for Start Again and Settings -->
+    <button id="startAgainButton" class="button start-again-button" aria-label="Start Again">Start Again</button>
+    <div class="side-buttons">
+        <button id="settingsButton" class="settings-button" aria-label="Open Settings">⚙️</button>
     </div>
 
-    <div class="current-direction" id="currentDirection">
-        Start Your Engine!
-    </div>
+    <div class="current-direction" id="currentDirection">Start Your Engine!</div>
 
-    <button id="directionButton" class="button" style="margin-top: 10px;">Get Direction</button> <!-- Added margin-top for spacing -->
+    <button id="directionButton" class="button" aria-label="Get Direction">Get Direction</button>
 
     <div class="roundabouts">
         <h3>Roundabouts</h3>
         <div class="roundabout-buttons">
-            <button id="roundabout2" class="button roundabout-button">2 Exits</button>
-            <button id="roundabout3" class="button roundabout-button">3 Exits</button>
-            <button id="roundabout4" class="button roundabout-button">4 Exits</button>
-            <button id="roundabout5" class="button roundabout-button">5 Exits</button>
+            <button id="roundabout2" class="button" aria-label="Roundabout with 2 exits">2 Exits</button>
+            <button id="roundabout3" class="button" aria-label="Roundabout with 3 exits">3 Exits</button>
+            <button id="roundabout4" class="button" aria-label="Roundabout with 4 exits">4 Exits</button>
+            <button id="roundabout5" class="button" aria-label="Roundabout with 5 exits">5 Exits</button>
         </div>
     </div>
 
@@ -199,26 +200,22 @@
             <label>
                 <input type="checkbox" id="toggleSound" checked> Engine Sound
             </label>
-            <br><br>
             <label>
                 <input type="checkbox" id="toggleBeep"> Beep Beep
             </label>
-            <br><br>
             <label>
                 <input type="checkbox" id="toggleGPSVoice" checked> GPS Voice
             </label>
-            <br><br>
             <label>
                 <input type="color" id="buttonColorPicker"> Button Color
             </label>
-            <br><br>
             <label>
                 <input type="checkbox" id="toggleDarkMode"> Dark Mode
             </label>
         </div>
     </div>
 
-    <!-- Audio Elements for GPS and Sound Effects -->
+    <!-- Audio Elements -->
     <audio id="startSound" src="sounds/engine-start.mp3"></audio>
     <audio id="beepSound" src="sounds/beep.mp3"></audio>
     <audio id="gpsLeft" src="sounds/gps-left.mp3"></audio>
@@ -230,158 +227,131 @@
     <audio id="gpsExit4" src="sounds/gps-exit-4.mp3"></audio>
     <audio id="gpsExit5" src="sounds/gps-exit-5.mp3"></audio>
 
+    <div class="log" id="log"></div> <!-- Log -->
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const splashScreen = document.getElementById('splashScreen');
-            const startSound = document.getElementById('startSound');
-            const beepSound = document.getElementById('beepSound');
-            const gpsLeft = document.getElementById('gpsLeft');
-            const gpsRight = document.getElementById('gpsRight');
-            const gpsStraight = document.getElementById('gpsStraight');
-            const currentDirectionElement = document.getElementById('currentDirection');
-            const startAgainButton = document.getElementById('startAgainButton');
-            const directionButton = document.getElementById('directionButton');
-            const settingsButton = document.getElementById('settingsButton');
-            const settingsModal = document.getElementById('settingsModal');
-            const closeModal = document.getElementById('closeModal');
-            const toggleSound = document.getElementById('toggleSound');
-            const toggleBeep = document.getElementById('toggleBeep');
-            const toggleGPSVoice = document.getElementById('toggleGPSVoice');
-            const buttonColorPicker = document.getElementById('buttonColorPicker');
-            const toggleDarkMode = document.getElementById('toggleDarkMode');
+        const directions = ['Left', 'Right', 'Straight'];
+        let log = []; // Stores direction history
+        let soundsEnabled = true;
+        let gpsVoiceEnabled = true;
+        let beepEnabled = false;
+        let darkModeEnabled = false;
 
-            let engineSoundEnabled = true;
-            let beepSoundEnabled = false;
-            let gpsVoiceEnabled = true;
+        const currentDirectionElement = document.getElementById('currentDirection');
+        const logElement = document.getElementById('log');
+        const splashScreen = document.getElementById('splashScreen');
 
-            // Hide splash screen after click and play start sound
-            splashScreen.addEventListener('click', () => {
-                splashScreen.style.opacity = '0'; // Fade out
-                setTimeout(() => splashScreen.style.display = 'none', 500); // After fade out
-                if (engineSoundEnabled) {
-                    startSound.play();
-                }
-            });
-
-            // Dark Mode Toggle
-            toggleDarkMode.addEventListener('change', () => {
-                document.body.classList.toggle('dark-mode');
-                currentDirectionElement.classList.toggle('dark-mode');
-            });
-
-            // Open/Close Settings Modal
-            settingsButton.addEventListener('click', () => {
-                settingsModal.style.display = 'flex';
-            });
-
-            closeModal.addEventListener('click', () => {
-                settingsModal.style.display = 'none';
-            });
-
-            // Toggle Engine Sound
-            toggleSound.addEventListener('change', () => {
-                engineSoundEnabled = toggleSound.checked;
-            });
-
-            // Toggle Beep Sound
-            toggleBeep.addEventListener('change', () => {
-                beepSoundEnabled = toggleBeep.checked;
-            });
-
-            // Toggle GPS Voice
-            toggleGPSVoice.addEventListener('change', () => {
-                gpsVoiceEnabled = toggleGPSVoice.checked;
-            });
-
-            // Change Button Color and Title Color
-buttonColorPicker.addEventListener('input', (event) => {
-    const newColor = event.target.value;
-    // Change button colors
-    document.querySelectorAll('.button').forEach(button => {
-        button.style.backgroundColor = newColor;
-    });
-    // Change title color
-    document.querySelector('.title').style.color = newColor; // Update title color
-});
-
-
-            // Directions functionality
-            directionButton.addEventListener('click', () => {
-                const directions = [
-    { text: 'Turn left', audio: gpsLeft },
-    { text: 'Turn right', audio: gpsRight },
-    { text: 'Go straight', audio: gpsStraight }
-];
-
-// Select a random direction
-const randomDirection = directions[Math.floor(Math.random() * directions.length)];
-
-// Fade out the current direction
-currentDirectionElement.style.opacity = '0'; // Fade out
-
-setTimeout(() => {
-    currentDirectionElement.textContent = randomDirection.text; // Display new direction text
-    currentDirectionElement.style.opacity = '1'; // Fade in
-
-    // Play corresponding audio
-    if (gpsVoiceEnabled) {
-        randomDirection.audio.play();
-    }
-
-    // Play beep sound if enabled
-    if (beepSoundEnabled) {
-        beepSound.play();
-    }
-}, 500);
-
-
-                if (gpsVoiceEnabled) {
-                    if (randomDirection === 'Left') {
-                        gpsLeft.play();
-                    } else if (randomDirection === 'Right') {
-                        gpsRight.play();
-                    } else if (randomDirection === 'Straight') {
-                        gpsStraight.play();
-                    }
-                }
-
-                if (beepSoundEnabled) {
-                    beepSound.play();
-                }
-            });
-
-            // Roundabouts functionality
-            document.getElementById('roundabout2').addEventListener('click', () => playRoundaboutExit(2));
-            document.getElementById('roundabout3').addEventListener('click', () => playRoundaboutExit(3));
-            document.getElementById('roundabout4').addEventListener('click', () => playRoundaboutExit(4));
-            document.getElementById('roundabout5').addEventListener('click', () => playRoundaboutExit(5));
-
-            function playRoundaboutExit(exits) {
-    const randomExit = Math.floor(Math.random() * exits) + 1; // Random exit between 1 and the number of exits
-    const exitAudio = document.getElementById(`gpsExit${randomExit}`);
-    currentDirectionElement.style.opacity = '0'; // Fade out
-    setTimeout(() => {
-        currentDirectionElement.textContent = `Take exit ${randomExit}`; // Use random exit
-        currentDirectionElement.style.opacity = '1'; // Fade in
-    }, 500);
-    if (gpsVoiceEnabled && exitAudio) {
-        exitAudio.play();
-    }
-    if (beepSoundEnabled) {
-        beepSound.play();
-    }
-}
-
-
-            // Reset game
-            startAgainButton.addEventListener('click', () => {
-                currentDirectionElement.textContent = 'Start Your Engine!';
-                if (engineSoundEnabled) {
-                    startSound.play();
-                }
-            });
+        /* Splash Screen Click */
+        splashScreen.addEventListener('click', function () {
+            this.style.opacity = 0;
+            setTimeout(() => this.style.display = 'none', 500);
+            if (soundsEnabled) playSound('startSound');
         });
-    </script>
 
+        /* Show a direction with sound and GPS voice */
+        function showDirection(direction) {
+            currentDirectionElement.textContent = `Go ${direction}`;
+            addDirectionToLog(`Go ${direction}`);
+            playDirectionSound(direction);
+            playBeepSound(); // Play beep sound if enabled
+        }
+
+        /* Play sound based on direction */
+        function playDirectionSound(direction) {
+            if (gpsVoiceEnabled) {
+                const soundId = {
+                    'Left': 'gpsLeft',
+                    'Right': 'gpsRight',
+                    'Straight': 'gpsStraight'
+                }[direction];
+                const sound = document.getElementById(soundId);
+                if (sound) sound.play();
+            }
+        }
+
+        /* Play beep sound if enabled */
+        function playBeepSound() {
+            if (beepEnabled) {
+                playSound('beepSound');
+            }
+        }
+
+        /* Add direction to log (prepend) */
+        function addDirectionToLog(direction) {
+            log.unshift(direction); // Add new direction to the start of the log array
+            logElement.innerHTML = log.join('<br/>'); // Update the log display
+        }
+
+        /* Roundabout function */
+        function handleRoundabout(exits) {
+            const exitNumber = Math.floor(Math.random() * exits) + 1; // Random exit number
+            const exitDirection = `Take the ${exitNumber}${getOrdinal(exitNumber)} exit`;
+            currentDirectionElement.textContent = exitDirection;
+            addDirectionToLog(exitDirection);
+            playRoundaboutGPS(exitNumber);
+            playBeepSound(); // Play beep sound if enabled
+        }
+
+        /* Play roundabout GPS voice */
+        function playRoundaboutGPS(exit) {
+            if (gpsVoiceEnabled) {
+                const sound = document.getElementById(`gpsExit${exit}`);
+                if (sound) sound.play();
+            }
+        }
+
+        /* Get ordinal suffix for exit */
+        function getOrdinal(n) {
+            return ["th", "st", "nd", "rd"][n % 10] || "th";
+        }
+
+        /* Event listeners for roundabouts */
+        document.getElementById('roundabout2').addEventListener('click', () => handleRoundabout(2));
+        document.getElementById('roundabout3').addEventListener('click', () => handleRoundabout(3));
+        document.getElementById('roundabout4').addEventListener('click', () => handleRoundabout(4));
+        document.getElementById('roundabout5').addEventListener('click', () => handleRoundabout(5));
+
+        /* Get Direction Button Event */
+        document.getElementById('directionButton').addEventListener('click', function () {
+            const randomDirection = directions[Math.floor(Math.random() * directions.length)];
+            showDirection(randomDirection);
+            playBeepSound(); // Play beep sound when direction is fetched
+        });
+
+        /* Settings Modal */
+        const settingsModal = document.getElementById('settingsModal');
+        document.getElementById('settingsButton').addEventListener('click', () => settingsModal.style.display = 'flex');
+        document.getElementById('closeModal').addEventListener('click', () => settingsModal.style.display = 'none');
+
+        /* Settings Change Handlers */
+        document.getElementById('toggleSound').addEventListener('change', e => soundsEnabled = e.target.checked);
+        document.getElementById('toggleBeep').addEventListener('change', e => beepEnabled = e.target.checked);
+        document.getElementById('toggleGPSVoice').addEventListener('change', e => gpsVoiceEnabled = e.target.checked);
+        document.getElementById('toggleDarkMode').addEventListener('change', e => toggleDarkMode(e.target.checked));
+        document.getElementById('buttonColorPicker').addEventListener('input', e => {
+            document.documentElement.style.setProperty('--button-bg-color', e.target.value);
+            document.documentElement.style.setProperty('--button-hover-color', e.target.value); // Keep hover color the same
+        });
+
+        /* Toggle Dark Mode */
+        function toggleDarkMode(enabled) {
+            darkModeEnabled = enabled;
+            document.body.classList.toggle('dark-mode', enabled);
+        }
+
+        /* Restart Game */
+        document.getElementById('startAgainButton').addEventListener('click', function () {
+            log = [];
+            logElement.innerHTML = '';
+            currentDirectionElement.textContent = 'Start Your Engine!';
+            if (soundsEnabled) playSound('startSound'); // Play engine sound on restart
+        });
+
+        /* Play any sound */
+        function playSound(soundId) {
+            const sound = document.getElementById(soundId);
+            if (sound) sound.play();
+        }
+    </script>
 </body>
 </html>
