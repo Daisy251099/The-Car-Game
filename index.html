@@ -6,8 +6,7 @@
         <title>Driving Direction Game</title>
     
         <!-- Favicon for the tab bar -->
-        <link rel="icon" type="image/png" href="images/favicon.png">
-        <link rel="apple-touch-icon" href="images/favicon.png"><!-- PNG Favicon -->
+        <link rel="icon" type="image/png" href="images/favicon.png"> <!-- PNG Favicon -->
         <!-- If using .ico -->
         <!-- <link rel="icon" type="image/x-icon" href="images/favicon.ico"> -->
     
@@ -46,6 +45,7 @@
         .dark-mode {
             background-color: var(--bg-dark);
             color: var(--text-dark-color);
+            transition: background-color 0.5s, color 0.5s
         }
 
         /* Title Styling */
@@ -179,6 +179,40 @@
         .no-animation .button {
             transition: none;
         }
+
+        /* Button click feedback */
+        .button:active {
+         transform: scale(0.95); /* Button shrinks slightly when clicked */
+         background-color: var(--button-hover-color); /* Slightly change background color */
+        }
+
+        /* Splash screen fade-out */
+        .splash-screen.fade-out {
+        opacity: 0;
+        transform: scale(0.9);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+
+        .log-entry {
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .log-entry.visible {
+        opacity: 1;
+        transform: translateY(0);
+        }
+
+
+
+
+}
+
+
+
+
+
+        
     </style>
 </head>
 <body>
@@ -264,11 +298,89 @@
 
         /* Show a direction with sound and GPS voice */
         function showDirection(direction) {
-            currentDirectionElement.textContent = `Go ${direction}`;
-            addDirectionToLog(`Go ${direction}`);
-            playDirectionSound(direction);
-            playBeepSound(); // Play beep sound if enabled
+    currentDirectionElement.textContent = `Go ${direction}`;
+    addDirectionToLog(`Go ${direction}`);
+
+    // Add 'active' class for visual feedback
+    currentDirectionElement.classList.add('active');
+    setTimeout(() => currentDirectionElement.classList.remove('active'), 500); // Remove after 500ms
+
+    playDirectionSound(direction);
+    playBeepSound();
+}
+
+function savePreferences() {
+    const preferences = {
+        soundsEnabled,
+        gpsVoiceEnabled,
+        beepEnabled,
+        darkModeEnabled,
+        buttonColor: document.documentElement.style.getPropertyValue('--button-bg-color') // Save current button color
+    };
+    localStorage.setItem('preferences', JSON.stringify(preferences));
+}
+
+
+function loadPreferences() {
+    const preferences = JSON.parse(localStorage.getItem('preferences'));
+    if (preferences) {
+        soundsEnabled = preferences.soundsEnabled;
+        gpsVoiceEnabled = preferences.gpsVoiceEnabled;
+        beepEnabled = preferences.beepEnabled;
+        toggleDarkMode(preferences.darkModeEnabled);
+
+        // Restore button color
+        if (preferences.buttonColor) {
+            document.documentElement.style.setProperty('--button-bg-color', preferences.buttonColor);
+            document.documentElement.style.setProperty('--button-hover-color', preferences.buttonColor);
+            document.getElementById('buttonColorPicker').value = preferences.buttonColor; // Set the color picker value
         }
+
+        // Set the initial state of checkboxes based on preferences
+        document.getElementById('toggleSound').checked = soundsEnabled;
+        document.getElementById('toggleGPSVoice').checked = gpsVoiceEnabled;
+        document.getElementById('toggleBeep').checked = beepEnabled;
+        document.getElementById('toggleDarkMode').checked = darkModeEnabled; 
+    }
+}
+
+
+document.getElementById('toggleSound').addEventListener('change', function (e) {
+    soundsEnabled = e.target.checked;
+    savePreferences(); // Save preference change
+});
+
+document.getElementById('toggleBeep').addEventListener('change', function (e) {
+    beepEnabled = e.target.checked;
+    savePreferences(); // Save preference change
+});
+
+document.getElementById('toggleGPSVoice').addEventListener('change', function (e) {
+    gpsVoiceEnabled = e.target.checked;
+    savePreferences(); // Save preference change
+});
+
+document.getElementById('toggleDarkMode').addEventListener('change', function (e) {
+    toggleDarkMode(e.target.checked);
+    savePreferences(); // Save preference change
+});
+
+
+
+window.addEventListener('load', loadPreferences);
+window.addEventListener('beforeunload', savePreferences);
+
+
+function addDirectionToLog(direction) {
+    const newLogEntry = document.createElement('div');
+    newLogEntry.classList.add('log-entry'); // Apply log-entry class
+    newLogEntry.textContent = direction;
+    
+    // Prepend new entry to log and apply visible class for fade-in
+    logElement.prepend(newLogEntry);
+    setTimeout(() => newLogEntry.classList.add('visible'), 10); // Trigger fade-in after a slight delay
+}
+
 
         /* Play sound based on direction */
         function playDirectionSound(direction) {
