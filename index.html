@@ -4,6 +4,10 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Driving Direction Game</title>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
     
         <!-- Favicon for the tab bar -->
         <link rel="icon" type="image/png" href="images/favicon.png"> <!-- PNG Favicon -->
@@ -51,26 +55,57 @@
         /* Title Styling */
         .title {
             font-size: 36px;
-            font-family: 'Comic Sans MS', cursive, sans-serif;
+            font-family: 'Permanent Marker', cursive;
+            font-weight: 400;
+            font-style: normal;
             margin: 20px 0;
             color: var(--button-bg-color); /* Match title color with button color */
         }
 
         /* Splash Screen Styling */
         .splash-screen {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            inset: 0;
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            font-size: 36px;
-            font-family: 'Comic Sans MS', cursive, sans-serif;
-            cursor: pointer;
-            transition: opacity 0.5s ease;
-            z-index: 1000;
-        }
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    font-size: 24px;
+    line-height: 1.5;
+    padding: 20px; /* Add padding around the entire splash screen */
+    border-radius: 10px; /* Optional: rounded corners */
+    text-align: center; /* Center align the text */
+    display: flex; /* Use flexbox for centering content */
+    flex-direction: column; /* Arrange items vertically */
+    justify-content: center; /* Center items vertically */
+    align-items: center; /* Center items horizontally */
+    z-index: 1000; /* Ensure it appears above other content */
+}
+
+.welcome-message {
+    font-size: 32px; /* Set a larger font size for the welcome message */
+    margin-bottom: 20px; /* Space below the welcome message */
+}
+
+.instructions {
+    margin-bottom: 15px; /* Space below the instructions title */
+    font-weight: bold; /* Make instructions title bold */
+}
+
+.instruction-item {
+    margin-bottom: 10px; /* Space between each instruction */
+}
+
+.click-to-start {
+    margin-top: 20px; /* Space above the "Click to start" text */
+}
+
+
+
+
+
+        
+
+
+
 
         /* Button Styles */
         .button {
@@ -203,6 +238,11 @@
         transform: translateY(0);
         }
 
+        .welcome-message {
+        margin-bottom: 20px; /* Adjust this value for desired spacing */
+        }
+
+
 
 
 
@@ -217,7 +257,21 @@
 </head>
 <body>
 
-    <div class="splash-screen" id="splashScreen">I'm ready to drive!</div> <!-- Splash Screen -->
+    <div class="splash-screen" id="splashScreen">
+        <div class="welcome-message">Welcome to the Driving Direction Game!</div>
+        <div class="instructions"><strong>Instructions:</strong></div>
+        <div class="instruction-item">1. Click "Get Direction" to receive your driving instruction.</div>
+        <div class="instruction-item">2. Follow the on-screen directions.</div>
+        <div class="instruction-item">3. Use the buttons to navigate through roundabouts.</div>
+        <div class="instruction-item">4. Check the log for your direction history.</div>
+        <div class="click-to-start">Click to start playing!</div>
+    </div> <!-- Splash Screen -->
+    
+    
+    
+    
+    
+    
 
     <div class="title">Driving Direction Game</div>
 
@@ -291,10 +345,11 @@
 
         /* Splash Screen Click */
         splashScreen.addEventListener('click', function () {
-            this.style.opacity = 0;
-            setTimeout(() => this.style.display = 'none', 500);
-            if (soundsEnabled) playSound('startSound');
-        });
+    this.style.opacity = 0; // Fade out effect
+    setTimeout(() => this.style.display = 'none', 500); // Hide after fade-out
+    if (soundsEnabled) playSound('startSound'); // Play sound if enabled
+});
+
 
         /* Show a direction with sound and GPS voice */
         function showDirection(direction) {
