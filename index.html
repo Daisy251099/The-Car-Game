@@ -358,6 +358,18 @@
     <div class="log" id="log"></div> <!-- Log -->
 
     <script>
+        function debounce(func, delay) {
+    let timeoutId;
+    return function(...args) {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+        timeoutId = setTimeout(() => {
+            func.apply(this, args);
+        }, delay);
+    };
+}
+
         const directions = ['Left', 'Right', 'Straight'];
         let log = []; // Stores direction history
         let soundsEnabled = true;
@@ -513,17 +525,19 @@ function addDirectionToLog(direction) {
         }
 
         /* Event listeners for roundabouts */
-        document.getElementById('roundabout2').addEventListener('click', () => handleRoundabout(2));
-        document.getElementById('roundabout3').addEventListener('click', () => handleRoundabout(3));
-        document.getElementById('roundabout4').addEventListener('click', () => handleRoundabout(4));
-        document.getElementById('roundabout5').addEventListener('click', () => handleRoundabout(5));
+        document.getElementById('roundabout2').addEventListener('click', debounce(() => handleRoundabout(2), 600));
+        document.getElementById('roundabout3').addEventListener('click', debounce(() => handleRoundabout(3), 600));
+        document.getElementById('roundabout4').addEventListener('click', debounce(() => handleRoundabout(4), 600));
+        document.getElementById('roundabout5').addEventListener('click', debounce(() => handleRoundabout(5), 600));
+
 
         /* Get Direction Button Event */
-        document.getElementById('directionButton').addEventListener('click', function () {
-            const randomDirection = directions[Math.floor(Math.random() * directions.length)];
-            showDirection(randomDirection);
-            playBeepSound(); // Play beep sound when direction is fetched
-        });
+        document.getElementById('directionButton').addEventListener('click', debounce(function () {
+    const randomDirection = directions[Math.floor(Math.random() * directions.length)];
+    showDirection(randomDirection);
+    playBeepSound(); // Play beep sound when direction is fetched
+}, 500)); // Adjust the delay as needed
+
 
         /* Settings Modal */
         const settingsModal = document.getElementById('settingsModal');
@@ -536,8 +550,8 @@ function addDirectionToLog(direction) {
         document.getElementById('toggleGPSVoice').addEventListener('change', e => gpsVoiceEnabled = e.target.checked);
         document.getElementById('toggleDarkMode').addEventListener('change', e => toggleDarkMode(e.target.checked));
         document.getElementById('buttonColorPicker').addEventListener('input', e => {
-            document.documentElement.style.setProperty('--button-bg-color', e.target.value);
-            document.documentElement.style.setProperty('--button-hover-color', e.target.value); // Keep hover color the same
+        document.documentElement.style.setProperty('--button-bg-color', e.target.value);
+        document.documentElement.style.setProperty('--button-hover-color', e.target.value); // Keep hover color the same
         });
 
         /* Toggle Dark Mode */
@@ -547,12 +561,13 @@ function addDirectionToLog(direction) {
         }
 
         /* Restart Game */
-        document.getElementById('startAgainButton').addEventListener('click', function () {
-            log = [];
-            logElement.innerHTML = '';
-            currentDirectionElement.textContent = 'Start Your Engine!';
-            if (soundsEnabled) playSound('startSound'); // Play engine sound on restart
-        });
+        document.getElementById('startAgainButton').addEventListener('click', debounce(function () {
+    log = [];
+    logElement.innerHTML = '';
+    currentDirectionElement.textContent = 'Start Your Engine!';
+    if (soundsEnabled) playSound('startSound'); // Play engine sound on restart
+}, 300));
+
 
         /* Play any sound */
         function playSound(soundId) {
