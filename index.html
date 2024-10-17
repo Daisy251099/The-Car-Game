@@ -56,11 +56,19 @@
         .title {
             font-size: 36px;
             font-family: 'Permanent Marker', cursive;
-            font-weight: 400;
-            font-style: normal;
-            margin: 20px 0;
+            font-weight: 400; /* Existing font weight */
+            margin: 20px 0; /* Existing margin */
             color: var(--button-bg-color); /* Match title color with button color */
-        }
+            text-align: center; /* Center align the text */
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) { /* Adjust for mobile screens */
+    .title {
+        font-size: 34px; /* Smaller size for mobile */
+        margin: 10px 0; /* Adjust margin for better spacing */
+    }
+}
 
         /* Splash Screen Styling */
         .splash-screen {
@@ -154,7 +162,7 @@
 
         /* Directions and Log */
         .current-direction, .log {
-            margin-top: 60px; /* Increased margin for more space */
+            margin-top: 78px; /* Increased margin for more space */
             width: 90%;
             text-align: center;
             font-size: 20px;
@@ -189,14 +197,32 @@
             align-items: center;
         }
 
-        .modal-content {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 300px;
-            text-align: left;
-        }
+        :root {
+    /* Other existing variables */
+    --modal-bg-light: #fff; /* Light mode background for modal */
+    --modal-bg-dark: #2c2c2c; /* Dark mode background for modal */
+    --modal-text-light: #000; /* Light mode text color */
+    --modal-text-dark: #f2f2f2; /* Dark mode text color */
+}
+
+/* Modal Styling */
+.modal-content {
+    background-color: var(--modal-bg-light); /* Default to light mode */
+    color: var(--modal-text-light); /* Default text color */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 300px;
+    text-align: left;
+}
+
+/* Dark mode adjustments for modal */
+.dark-mode .modal-content {
+    background-color: var(--modal-bg-dark); /* Change background for dark mode */
+    color: var(--modal-text-dark); /* Change text color for dark mode */
+}
+;
+
 
         .close {
             float: right;
