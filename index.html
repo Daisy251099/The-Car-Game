@@ -15,6 +15,14 @@
         <!-- <link rel="icon" type="image/x-icon" href="images/favicon.ico"> -->
     
         <!-- Other head content like stylesheets, etc. -->
+        <head>
+            <meta name="apple-mobile-web-app-capable" content="yes">
+            <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+            <link rel="apple-touch-icon" sizes="180x180" href="images/apple-icon.png">
+            <title>Direction Game</title>
+            <!-- Other meta tags -->
+        </head>
+        
     </head>
     
 <head>
@@ -54,7 +62,7 @@
 
         /* Title Styling */
         .title {
-            font-size: 36px;
+            font-size: 40px;
             font-family: 'Permanent Marker', cursive;
             font-weight: 400; /* Existing font weight */
             margin: 20px 0; /* Existing margin */
@@ -283,6 +291,8 @@
 </head>
 <body>
 
+    
+
     <div class="splash-screen" id="splashScreen">
         <div class="welcome-message">Welcome to the Driving Direction Game!</div>
         <div class="instructions"><strong>Instructions:</strong></div>
@@ -293,9 +303,7 @@
         <div class="click-to-start">Click to start playing!</div>
     </div> <!-- Splash Screen -->
     
-    
-    
-    
+
     
     
 
@@ -307,7 +315,8 @@
         <button id="settingsButton" class="settings-button" aria-label="Open Settings">⚙️</button>
     </div>
 
-    <div class="current-direction" id="currentDirection">Start Your Engine!</div>
+    <div class="current-direction" id="currentDirection" aria-live="polite">Start Your Engine!</div>
+
 
     <button id="directionButton" class="button" aria-label="Get Direction">Get Direction</button>
 
@@ -391,8 +400,17 @@
 
         /* Show a direction with sound and GPS voice */
         function showDirection(direction) {
-    currentDirectionElement.textContent = `Go ${direction}`;
-    addDirectionToLog(`Go ${direction}`);
+    let directionText;
+
+    if (direction === 'Straight') {
+        directionText = `Go ${direction}`;
+    } else {
+        directionText = `Turn ${direction}`;
+    }
+
+    currentDirectionElement.textContent = directionText;
+    addDirectionToLog(directionText);
+    
 
     // Add 'active' class for visual feedback
     currentDirectionElement.classList.add('active');
@@ -401,6 +419,8 @@
     playDirectionSound(direction);
     playBeepSound();
 }
+
+
 
 function savePreferences() {
     const preferences = {
@@ -561,12 +581,16 @@ function addDirectionToLog(direction) {
         }
 
         /* Restart Game */
-        document.getElementById('startAgainButton').addEventListener('click', debounce(function () {
-    log = [];
-    logElement.innerHTML = '';
-    currentDirectionElement.textContent = 'Start Your Engine!';
-    if (soundsEnabled) playSound('startSound'); // Play engine sound on restart
-}, 300));
+        document.getElementById('startAgainButton').addEventListener('click', function () {
+    const confirmRestart = confirm("Are you sure you want to restart the game?");
+    if (confirmRestart) {
+        log = [];
+        logElement.innerHTML = '';
+        currentDirectionElement.textContent = 'Start Your Engine!';
+        if (soundsEnabled) playSound('startSound');
+    }
+});
+
 
 
         /* Play any sound */
