@@ -431,7 +431,7 @@ document.getElementById('leftOrRightBtn').addEventListener('click', () => {
 let straightCount = 0;
 let timeoutId;
 
-function showDirection(direction) {
+async function showDirection(direction) {
     let directionText;
 
     if (direction === "Straight") {
@@ -487,16 +487,23 @@ if (straightCount >= 1) { // Adjust the threshold as needed
 }
     currentDirectionElement.textContent = directionText;
     addDirectionToLog(directionText);
+
+      // Await for the UI update before playing audio
+    await new Promise(resolve => requestAnimationFrame(resolve));
+
+    
     
     // Add 'active' class for visual feedback
     currentDirectionElement.classList.add('active');
     setTimeout(() => currentDirectionElement.classList.remove('active'), 500); // Remove after 500ms
 
+    setTimeout(() => {
     playDirectionSound(direction);
     playBeepSound();
+  }, 200); // Adjust the delay as needed
 }
 
-function showLeftOrRightDirection() {
+async function showLeftOrRightDirection() {
     const leftOrRight = Math.random() < 0.5 ? 'Left' : 'Right';
     let directionText = `Turn ${leftOrRight}`;
 
@@ -522,14 +529,19 @@ function showLeftOrRightDirection() {
 
     currentDirectionElement.textContent = directionText;
     addDirectionToLog(directionText);
+      // Await for the UI update before playing audio
+  await new Promise(resolve => requestAnimationFrame(resolve));
     
     // Add 'active' class for visual feedback
     currentDirectionElement.classList.add('active');
     setTimeout(() => currentDirectionElement.classList.remove('active'), 500); // Remove after 500ms
 
+    setTimeout(() => {
     playDirectionSound(leftOrRight);
     playBeepSound();
+  }, 200); // Adjust the delay as needed
 }
+
 
 
 
@@ -664,6 +676,7 @@ function addDirectionToLog(direction) {
         document.getElementById('roundabout3').addEventListener('click', debounce(() => handleRoundabout(3), 600));
         document.getElementById('roundabout4').addEventListener('click', debounce(() => handleRoundabout(4), 600));
         document.getElementById('roundabout5').addEventListener('click', debounce(() => handleRoundabout(5), 600));
+        
 
 
         /* Get Direction Button Event */
