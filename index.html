@@ -428,8 +428,29 @@ document.getElementById('leftOrRightBtn').addEventListener('click', () => {
     showLeftOrRightDirection();
 });
 
+let straightCount = 0;
+let timeoutId;
+
 function showDirection(direction) {
     let directionText;
+
+    if (direction === "Straight") {
+  straightCount++;
+} else {
+  straightCount = 0; // Reset counter if direction changes
+}
+
+// Check if a timeout is already set
+if (timeoutId) {
+  clearTimeout(timeoutId);
+}
+
+// Set a new timeout if going straight for a long time
+if (straightCount >= 1) { // Adjust the threshold as needed
+  timeoutId = setTimeout(() => {
+    showStraightPrompt();
+  }, 60000); // 60 seconds
+}
 
     if (direction === 'Straight') {
         directionText = `Go ${direction}`;
@@ -457,6 +478,13 @@ function showDirection(direction) {
         return; // Exit this function
     }
 
+    function showStraightPrompt() {
+  // Display the prompt (e.g., using a modal or alert)
+  alert("You've been going straight for a while. Consider changing direction.");
+
+  // Reset the straight count
+  straightCount = 0;
+}
     currentDirectionElement.textContent = directionText;
     addDirectionToLog(directionText);
     
