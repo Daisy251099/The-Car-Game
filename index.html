@@ -82,7 +82,7 @@
         .splash-screen {
     position: fixed;
     inset: 0;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.9);
     color: white;
     font-size: 24px;
     line-height: 1.5;
@@ -137,6 +137,7 @@
             transition: transform 0.2s ease;
         }
 
+
         /* Remove hover effect */
         .button:hover {
             transform: scale(1.05);
@@ -177,9 +178,15 @@
             transition: opacity 0.5s;
         }
 
+        .button-container {
+  display: flex; /* Use flexbox for horizontal layout */
+  gap: 30px; /* Adjust the gap between buttons as needed */
+}
+
         .current-direction {
             font-size: 28px;
             font-weight: bold;
+            margin-bottom: 20px; /* Increase this value to create more space */
         }
 
         /* Flex Layouts */
@@ -296,10 +303,11 @@
     <div class="splash-screen" id="splashScreen">
         <div class="welcome-message">Welcome to the Driving Direction Game!</div>
         <div class="instructions"><strong>Instructions:</strong></div>
-        <div class="instruction-item">1. Click "Get Direction" to receive your driving instruction.</div>
-        <div class="instruction-item">2. Follow the on-screen directions.</div>
-        <div class="instruction-item">3. Use the buttons to navigate through roundabouts.</div>
-        <div class="instruction-item">4. Check the log for your direction history.</div>
+        <div class="instruction-item">1. Click "Next Direction" to receive your driving instruction.</div>
+        <div class="instruction-item">2. If you only need to turn, click "Left or Right.".</div>
+        <div class="instruction-item">3. Follow the on-screen directions precisely.</div>
+        <div class="instruction-item">4. Use the buttons to navigate through roundabouts.</div>
+        <div class="instruction-item">5. Navigate roundabouts using the provided buttons.</div>
         <div class="click-to-start">Click to start playing!</div>
     </div> <!-- Splash Screen -->
     
@@ -318,7 +326,11 @@
     <div class="current-direction" id="currentDirection" aria-live="polite">Start Your Engine!</div>
 
 
-    <button id="directionButton" class="button" aria-label="Get Direction">Get Direction</button>
+    <div class="button-container">
+        <button id="directionButton" class="button" aria-label="Get Direction">Next Direction</button>
+        <button id="leftOrRightBtn" class="button" aria-label="Left Or Right">Left Or Right</button>
+      </div>
+
 
     <div class="roundabouts">
         <h3>Roundabouts</h3>
@@ -399,7 +411,24 @@
 
 
         /* Show a direction with sound and GPS voice */
-        function showDirection(direction) {
+        let lastDirection = ""; // To store the last shown direction
+let lastDirectionCount = 0; // Count of consecutive same directions
+let lastLeftOrRight = ""; // To store the last left/right direction
+let lastLeftOrRightCount = 0; // Count of consecutive left/right same directions
+
+// Sample directions for the 'Get Direction' button
+
+// Add event listener for "Get Direction" button
+document.getElementById('directionButton').addEventListener('click', () => {
+    const direction = directions[Math.floor(Math.random() * directions.length)];
+});
+
+// Add event listener for "Left or Right" button
+document.getElementById('leftOrRightBtn').addEventListener('click', () => {
+    showLeftOrRightDirection();
+});
+
+function showDirection(direction) {
     let directionText;
 
     if (direction === 'Straight') {
@@ -408,10 +437,29 @@
         directionText = `Turn ${direction}`;
     }
 
+    // Check if the current direction is the same as the last one
+    if (direction === lastDirection) {
+        lastDirectionCount++;
+    } else {
+        lastDirection = direction; // Update last direction
+        lastDirectionCount = 1; // Reset count
+    }
+
+    // If the direction has been shown twice already, choose a new one
+    if (lastDirectionCount > 2) {
+        // Get a different direction
+        let newDirection;
+        do {
+            newDirection = directions[Math.floor(Math.random() * directions.length)];
+        } while (newDirection === lastDirection); // Keep choosing until it's different
+
+        showDirection(newDirection); // Recursively show the new direction
+        return; // Exit this function
+    }
+
     currentDirectionElement.textContent = directionText;
     addDirectionToLog(directionText);
     
-
     // Add 'active' class for visual feedback
     currentDirectionElement.classList.add('active');
     setTimeout(() => currentDirectionElement.classList.remove('active'), 500); // Remove after 500ms
@@ -419,6 +467,45 @@
     playDirectionSound(direction);
     playBeepSound();
 }
+
+function showLeftOrRightDirection() {
+    const leftOrRight = Math.random() < 0.5 ? 'Left' : 'Right';
+    let directionText = `Turn ${leftOrRight}`;
+
+    // Check if the current left/right direction is the same as the last one
+    if (leftOrRight === lastLeftOrRight) {
+        lastLeftOrRightCount++;
+    } else {
+        lastLeftOrRight = leftOrRight; // Update last left/right direction
+        lastLeftOrRightCount = 1; // Reset count
+    }
+
+    // If the left/right direction has been shown twice already, choose a new one
+    if (lastLeftOrRightCount > 2) {
+        // Get a different direction
+        let newDirection;
+        do {
+            newDirection = Math.random() < 0.5 ? 'Left' : 'Right';
+        } while (newDirection === lastLeftOrRight); // Keep choosing until it's different
+
+        directionText = `Turn ${newDirection}`; // Update to the new direction
+        lastLeftOrRight = newDirection; // Update last left/right
+    }
+
+    currentDirectionElement.textContent = directionText;
+    addDirectionToLog(directionText);
+    
+    // Add 'active' class for visual feedback
+    currentDirectionElement.classList.add('active');
+    setTimeout(() => currentDirectionElement.classList.remove('active'), 500); // Remove after 500ms
+
+    playDirectionSound(leftOrRight);
+    playBeepSound();
+}
+
+
+
+
 
 
 
